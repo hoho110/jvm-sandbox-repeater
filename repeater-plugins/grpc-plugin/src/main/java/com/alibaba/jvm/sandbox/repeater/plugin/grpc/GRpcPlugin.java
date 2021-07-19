@@ -23,7 +23,14 @@ public class GRpcPlugin extends AbstractInvokePluginAdapter {
     protected List<EnhanceModel> getEnhanceModels() {
         EnhanceModel em = EnhanceModel.builder()
                 .classPattern("io.grpc.stub.ClientCalls")
-                .methodPatterns(EnhanceModel.MethodPattern.transform("blockingUnaryCall"))
+                .methodPatterns(EnhanceModel.MethodPattern.transform(
+                        "asyncUnaryCall",
+                        "asyncServerStreamingCall",
+                        "asyncClientStreamingCall",
+                        "asyncBidiStreamingCall",
+                        "blockingUnaryCall",
+                        "blockingServerStreamingCall",
+                        "futureUnaryCall"))
                 .watchTypes(Type.BEFORE, Type.RETURN, Type.THROWS)
                 .build();
         return Lists.newArrayList(em);

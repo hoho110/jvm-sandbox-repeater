@@ -20,6 +20,7 @@
         <module>hibernate-plugin</module>
         <module>spring-data-jpa-plugin</module>
         <module>socketio-plugin</module>
+        <module>grpc-plugin</module>
     </modules>
 
     <dependencies>
