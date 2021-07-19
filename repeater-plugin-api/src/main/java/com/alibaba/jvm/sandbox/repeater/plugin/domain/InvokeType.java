@@ -27,6 +27,8 @@ public class InvokeType implements java.io.Serializable {
 
     public static InvokeType SOCKETIO = new InvokeType("socketio");
 
+    public static InvokeType GRPC = new InvokeType("grpc");
+
     private String name;
 
     public InvokeType(String name) {
