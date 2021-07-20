@@ -1,9 +1,11 @@
 package com.alibaba.jvm.sandbox.repeater.plugin.core.impl.api;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.jvm.sandbox.repeater.plugin.Constants;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.impl.AbstractBroadcaster;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.serialize.SerializeException;
@@ -15,6 +17,7 @@ import com.alibaba.jvm.sandbox.repeater.plugin.core.wrapper.SerializerWrapper;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.*;
 
 import com.google.common.collect.Maps;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -73,9 +76,9 @@ public class DefaultBroadcaster extends AbstractBroadcaster {
     @Override
     protected void broadcastRepeat(RepeatModel record) {
         try {
-            String body = SerializerWrapper.hessianSerialize(record);
+            String body = URLEncoder.encode(new GsonBuilder().create().toJson(record),"UTF-8");
             broadcast(broadcastRepeatUrl, body, record.getTraceId());
-        } catch (SerializeException e) {
+        } catch (Exception e) {
             log.error("broadcast record failed", e);
         } catch (Throwable throwable) {
             log.error("[Error-0000]-broadcast record failed", throwable);

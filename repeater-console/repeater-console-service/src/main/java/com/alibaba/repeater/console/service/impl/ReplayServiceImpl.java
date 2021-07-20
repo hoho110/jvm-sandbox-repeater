@@ -27,12 +27,15 @@ import com.alibaba.repeater.console.service.convert.ReplayConverter;
 import com.alibaba.repeater.console.service.util.ConvertUtil;
 import com.alibaba.repeater.console.service.util.JacksonUtil;
 import com.alibaba.repeater.console.service.util.ResultHelper;
+import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,12 +94,11 @@ public class ReplayServiceImpl implements ReplayService {
 
     @Override
     public RepeaterResult<String> saveRepeat(String body) {
-        RepeatModel rm;
+        RepeatModel rm = null;
         try {
-            rm = SerializerWrapper.hessianDeserialize(body, RepeatModel.class);
-        } catch (SerializeException e) {
-            log.error("error occurred when deserialize repeat model", e);
-            return RepeaterResult.builder().message("operate failed").build();
+            rm = new GsonBuilder().create().fromJson(URLDecoder.decode(body,"UTF-8"), RepeatModel.class);
+        } catch (UnsupportedEncodingException e) {
+            log.error("saveRepeat failed,record:{}",body, e);
         }
         // this process must handle by async
         Replay replay = replayDao.findByRepeatId(rm.getRepeatId());
@@ -166,7 +168,7 @@ public class ReplayServiceImpl implements ReplayService {
         } catch (SerializeException e) {
             return RepeaterResult.builder().success(false).message(e.getMessage()).build();
         }
-        HttpUtil.Resp resp = HttpUtil.doPost(String.format(repeatURL,params.getIp(),params.getPort()), requestParams);
+        HttpUtil.Resp resp = HttpUtil.doPost(String.format(repeatURL,params.getIp(),60000), requestParams);
         if (resp.isSuccess()) {
             return RepeaterResult.builder().success(true).message("operate success").data(meta.getRepeatId()).build();
         }
