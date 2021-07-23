@@ -12,12 +12,14 @@ import org.kohsuke.MetaInfServices;
 import java.util.List;
 
 /**
+ * {@link GRpcConsumerPlugin} grpc provider
  * <p>
- *
- * @author zhaoyb1990
+ * 拦截io.grpc.stub.ClientCalls#blockingUnaryCall等入口进行录制
+ * </p>
+ * @author wangmeng
  */
 @MetaInfServices(InvokePlugin.class)
-public class GRpcPlugin extends AbstractInvokePluginAdapter {
+public class GRpcConsumerPlugin extends AbstractInvokePluginAdapter {
 
     @Override
     protected List<EnhanceModel> getEnhanceModels() {
@@ -38,7 +40,7 @@ public class GRpcPlugin extends AbstractInvokePluginAdapter {
 
     @Override
     protected InvocationProcessor getInvocationProcessor() {
-        return new GRpcProcessor(getType());
+        return new GRpcConsumerProcessor(getType());
     }
 
     @Override

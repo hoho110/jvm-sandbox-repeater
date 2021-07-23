@@ -7,17 +7,16 @@ import com.alibaba.jvm.sandbox.repeater.plugin.domain.Identity;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.InvokeType;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 /**
+ * {@link GRpcConsumerProcessor} grpc消费端调用处理
  * <p>
- *
  * @author wangmeng
  */
-class GRpcProcessor extends DefaultInvocationProcessor {
+class GRpcConsumerProcessor extends DefaultInvocationProcessor {
 
-    GRpcProcessor(InvokeType type) {
+    GRpcConsumerProcessor(InvokeType type) {
         super(type);
     }
 
