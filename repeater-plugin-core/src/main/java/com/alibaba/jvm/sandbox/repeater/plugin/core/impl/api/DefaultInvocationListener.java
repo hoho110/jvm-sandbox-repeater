@@ -1,28 +1,24 @@
 package com.alibaba.jvm.sandbox.repeater.plugin.core.impl.api;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.jvm.sandbox.repeater.plugin.api.Broadcaster;
 import com.alibaba.jvm.sandbox.repeater.plugin.api.InvocationListener;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.cache.RecordCache;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.model.ApplicationModel;
+import com.alibaba.jvm.sandbox.repeater.plugin.core.serialize.JSONMessageSerializer;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.serialize.SerializeException;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.trace.Tracer;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.wrapper.SerializerWrapper;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.Invocation;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.InvokeType;
 import com.alibaba.jvm.sandbox.repeater.plugin.domain.RecordModel;
-
-import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * {@link DefaultInvocationListener} 默认的调用监听实现
@@ -93,38 +89,12 @@ public class DefaultInvocationListener implements InvocationListener {
         if(invocation.getRequest() != null && invocation.getRequest().length > 0){
             Object[] request = invocation.getRequest();
             for(int i =0;i < request.length;i++){
-                if(isPb(request[i].getClass())){
-                    try {
-                        request[i] = MethodUtils.invokeMethod(JsonFormat.printer(),"print",request[i]);
-                    } catch (Exception e) {
-                        log.error("error parse invocation request", e);
-                    }
-                }
+                    request[i] = JSONMessageSerializer.serialize(request[i]);
             }
             invocation.setRequestSerializedText(JSON.toJSONString(request));
         }
         if(invocation.getResponse() != null){
-            if(isPb(invocation.getResponse().getClass())){
-                try {
-                    invocation.setResponseSerializedText((String)(MethodUtils.invokeMethod(JsonFormat.printer(),"print",invocation.getResponse())));
-                } catch (Exception e) {
-                    log.error("error parse invocation request", e);
-                }
-            } else {
-                invocation.setResponseSerializedText(JSON.toJSONString(invocation.getResponse()));
-            }
+            invocation.setResponseSerializedText(JSONMessageSerializer.serialize(invocation.getResponse()));
         }
-    }
-    private boolean isPb(Class valueClass) {
-        Method getParserForType = null;
-        try {
-            getParserForType = valueClass.getMethod("getParserForType");
-        } catch (NoSuchMethodException e) {
-            return false;
-        }
-        if (getParserForType == null) {
-            return false;
-        }
-        return true;
     }
 }

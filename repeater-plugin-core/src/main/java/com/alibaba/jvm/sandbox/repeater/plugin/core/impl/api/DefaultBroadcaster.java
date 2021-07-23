@@ -8,6 +8,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.jvm.sandbox.repeater.plugin.Constants;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.impl.AbstractBroadcaster;
+import com.alibaba.jvm.sandbox.repeater.plugin.core.serialize.JSONMessageSerializer;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.serialize.SerializeException;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.util.HttpUtil;
 import com.alibaba.jvm.sandbox.repeater.plugin.core.util.HttpUtil.Resp;
@@ -76,6 +77,7 @@ public class DefaultBroadcaster extends AbstractBroadcaster {
     @Override
     protected void broadcastRepeat(RepeatModel record) {
         try {
+            record.setResponse(JSONMessageSerializer.serialize(record.getResponse()));
             String body = URLEncoder.encode(new GsonBuilder().create().toJson(record),"UTF-8");
             broadcast(broadcastRepeatUrl, body, record.getTraceId());
         } catch (Exception e) {
