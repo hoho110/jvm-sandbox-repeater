@@ -65,6 +65,11 @@ public class Invocation implements java.io.Serializable {
     private String requestSerialized;
 
     /**
+     * 序列化之后的请求值展示文本
+     */
+    private String requestSerializedText;
+
+    /**
      * 返回结果 - snapshot 不做传输使用
      */
     private transient Object response;
@@ -73,6 +78,11 @@ public class Invocation implements java.io.Serializable {
      * 序列化之后的请求值，录制时候作为{@link Invocation#response}的载体传输；回放时候需要还原成{@link Invocation#response}
      */
     private String responseSerialized;
+
+    /**
+     * 序列化之后的响应值展示文本
+     */
+    private String responseSerializedText;
 
     /**
      * 异常信息 - snapshot 不做传输使用
@@ -238,5 +248,21 @@ public class Invocation implements java.io.Serializable {
 
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
+    }
+
+    public String getRequestSerializedText() {
+        return requestSerializedText;
+    }
+
+    public void setRequestSerializedText(String requestSerializedText) {
+        this.requestSerializedText = requestSerializedText;
+    }
+
+    public String getResponseSerializedText() {
+        return responseSerializedText;
+    }
+
+    public void setResponseSerializedText(String responseSerializedText) {
+        this.responseSerializedText = responseSerializedText;
     }
 }

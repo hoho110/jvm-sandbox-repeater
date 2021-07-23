@@ -26,18 +26,20 @@ public class ConvertUtil {
         record.setGmtRecord(new Date(wrapper.getTimestamp()));
         record.setHost(wrapper.getHost());
         record.setTraceId(wrapper.getTraceId());
-        Serializer hessian = SerializerProvider.instance().provide(Serializer.Type.HESSIAN);
-        try {
-            Object response = hessian.deserialize(wrapper.getEntranceInvocation().getResponseSerialized(), Object.class);
-            if (response instanceof String) {
-                record.setResponse(convert2Json((String)response));
-            } else {
-                record.setResponse(JacksonUtil.serialize(response));
-            }
-            record.setRequest(JacksonUtil.serialize(hessian.deserialize(wrapper.getEntranceInvocation().getRequestSerialized(), Object[].class)));
-        } catch (SerializeException e) {
-            // ignore
-        }
+//        Serializer hessian = SerializerProvider.instance().provide(Serializer.Type.HESSIAN);
+//        try {
+//            Object response = hessian.deserialize(wrapper.getEntranceInvocation().getResponseSerialized(), Object.class);
+//            if (response instanceof String) {
+//                record.setResponse(convert2Json((String)response));
+//            } else {
+//                record.setResponse(JacksonUtil.serialize(response));
+//            }
+//            record.setRequest(JacksonUtil.serialize(hessian.deserialize(wrapper.getEntranceInvocation().getRequestSerialized(), Object[].class)));
+//        } catch (SerializeException e) {
+//            // ignore
+//        }
+        record.setRequest(wrapper.getEntranceInvocation().getRequestSerializedText());
+        record.setResponse(wrapper.getEntranceInvocation().getResponseSerializedText());
         record.setEntranceDesc(wrapper.getEntranceDesc());
         record.setWrapperRecord(body);
         return record;
